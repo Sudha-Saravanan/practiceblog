@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{{title}}</title>
+    </head>
+<body>
+    <main>
+        <p style="text-align:center">
+            <table style= "width:100%">
+                <tr text-align="center">
+                    <th style="display:inline-block;">
+                        ManiCity<i style="font-family:courier; color:rgb(4, 0, 255); font-size:12px;">Your custom Tees</i>
+        
+                    </th>
+                    <th>
+                        <h4>MANICITY LOGO/Banner image</h4>
+                    </th>
+                    <th>
+                        <h4 align="left" text-align="right"><a href="">Login</a>&nbsp;|&nbsp;<a href="">Register</a></h4>
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        Search bar
+                        <br>
+                        <a href="./">Home</a>
+                        <a href="./newpost">Add New Post</a>
+                    </td>
+                    <td>
+                        <h1>T-shirt Images</h1> 
+                    </td>
+                    <td>
+                        Display Time and calendar
+                    </td>
+                </tr>
+            </table>
+            <div class="container" style="text-align:center">
+                {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                    <div class="flash_message">{{message|safe}}</div>
+                {% endfor %}
+                {% endwith %}
+                {% block content %}
+                {% endblock %}
+            </div>    
+        </p> 
+        
+        
+    </main>
+</body>
+</html>
+    

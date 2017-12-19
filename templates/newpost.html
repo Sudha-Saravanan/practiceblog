@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{title}}</h1>
+
+    <form method='POST' action="/newpost">
+        <lable id="new_title">Title:
+        <input id="new_title" type="text" name="title" value="{{newpost_title}}"/>
+        </lable>
+        <br>
+        <br>
+        <lable id="new_boby">Post:
+        <textarea id="new_body" name="body">{{newpost_body}}</textarea>
+        </lable>
+        <input id="new_submit" type="submit" value="Add Post" />
+    </form>
+    
+{% endblock %}
