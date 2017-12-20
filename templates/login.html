@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{title}}</h1>
+    
     <form name="login" align="center" action="/login" method='post'>
             
         <label for="user-name">User Name</label>
@@ -24,6 +24,7 @@
 {% endblock %}
 
 <!--
+    <h1>{{title}}</h1>
     if existing_user and existing_user.password == 'pwd1':
            return redirect('/')
         else:

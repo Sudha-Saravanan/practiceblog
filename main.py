@@ -91,6 +91,7 @@ def newpost():
         if newpost.is_valid():
             db.session.add(newpost)
             db.session.commit()
+            author = User.query.filter_by(id=newpost.owner_id).first()
             url = "/blog?id=" + str(newpost.id)
             return redirect(url)
         elif newpost_title =='':
@@ -100,7 +101,7 @@ def newpost():
             flash("Body is required to post in the blog")
             return render_template('newpost.html',title="New Post")
     else:
-        return render_template('newpost.html',title="New Post")
+        return render_template('newpost.html',title="New Post", welcome=welcome)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
