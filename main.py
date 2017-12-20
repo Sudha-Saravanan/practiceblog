@@ -60,26 +60,18 @@ def index():
     return redirect("/blog")
    
 @app.route("/blog")
-def blog():
-    # TODO refactor to use routes with variables instead of GET parameters
-    
-    if request.args:
-        blogpost_id = request.args.get('id')
-        blog = Blog.query.get(blogpost_id)
-        return render_template('individualpost.html', title="Blog Entry", blog=blog)
+def home():
+    blogs=Blog.query.all()
+    welcome = "Not logged in"
 
-    # if we're here, we need to display all the entries
-    # TODO store sort direction in session[] so we remember user's preference
-    sort = request.args.get('sort')
-    if (sort=="newest"):
-        blogs = Blog.query.order_by(Blog.date.DESC()).all()
-    else:
-        blogs = Blog.query.all()   
-    return render_template('allpost.html', title="All Entries", blogs=blogs)
+    if 'username' in session:
+        welcome = "Logged in as:" + session['username']
+        
+    return render_template('home.html', title="ManiCity", blogs=blogs, welcome=welcome)
 
 @app.route("/newpost", methods=['POST', 'GET'])
 def newpost():
-    welcome = "Logged in as:" + session['user']
+    welcome = "Logged in as:" + session['username']
     owner = User.query.filter_by(username=session['username']).first()
 
     if request.method =='POST':
@@ -102,6 +94,56 @@ def newpost():
             return render_template('newpost.html',title="New Post")
     else:
         return render_template('newpost.html',title="New Post", welcome=welcome)
+
+
+@app.route("/individual")
+def blog():
+    welcome = "Not logged in"
+    if 'username' in session:
+        welcome = "Logged in as: " + session['username']
+
+    title = request.args.get('blog_title')
+    if title:
+        existing_blog = Blog.query.filter_by(title= title).first()
+        author = User.query.filter_by(id= existing_blog.owner_id).first()
+    return render_template("individualpost.html", 
+            title= existing_blog.title, body= existing_blog.body,
+            author= author.username, welcome= welcome)
+
+    # TODO refactor to use routes with variables instead of GET parameters
+    
+    #if request.args:
+     #   blogpost_id = request.args.get('id')
+      #  blog = Blog.query.get(blogpost_id)
+       # return render_template('individualpost.html', title="Blog Entry", blog=blog)
+
+    # if we're here, we need to display all the entries
+    # TODO store sort direction in session[] so we remember user's preference
+    #sort = request.args.get('sort')
+    #if (sort=="newest"):
+        #blogs = Blog.query.order_by(Blog.date.DESC()).all()
+    #else:
+        #blogs = Blog.query.all()   
+    #return render_template('allpost.html', title="All Entries", blogs=blogs)
+
+
+
+@app.route("/UserPage")
+def UserPosts():
+    welcome = "Not logged in"
+    if 'username' in session:
+        welcome = "Logged in as: " + session['username']
+
+    username = request.args.get('user_link')
+    if username:
+        existing_user = User.query.filter_by(username= username).first()
+        user_posts = existing_user.blogs
+        return render_template("UserPage.html", welcome= welcome,
+            title= username+"'s posts", blogs= user_posts)
+
+    user_list = User.query.all()
+    return render_template("Allpost.html", title= "All Users",
+        welcome= welcome, user_list= user_list)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -142,18 +184,16 @@ def register():
             db.session.commit()
 
             #TODO - remember the user
-            session['username'] = username
-            return redirect('/newpost')
-        else:
-            #TODO-user response messaging
-            return "<h1>Duplicate User</h1>"
-
-    return render_template('register.html')
+            session['username'] = new_user.username
+            return redirect('/blog')
+       
+    return render_template('register.html', title= "Register for this BLog")
 
 @app.route('/logout')
 def logout():
-    del session['username']
-    return redirect('/')
+    if 'username' in session:
+        del session['username']
+    return redirect('/blog')
 
         
 if __name__ == '__main__':

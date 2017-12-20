@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{title}}</h1>
-    {% for blog in blogs %}
-    <h2><a href="/blog?id={{blog.id}}">{{blog.title}}</a></h2>
-    <p>{{blog.body}}</p>
-    <p>{{blog.date}}</p>
+    {% for user in user_list %}
+        <lable><b> User Id: </b></lable>
+        {{ user.id }}
+        <lable>Username:</lable>
+        <input type="text" name= "user_link" value= "{{ user.username }}"/>
     {% endfor %}
 {% endblock %}

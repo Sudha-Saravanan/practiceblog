@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for blog in blogs %}
+        <form id= "individual_blog" action="/individual"></form>
+            <a href="/blog?id={{blog.id}}">{{ blog.title }}</a> 
+            
+        </form>
+        <form id= "individual_user" action= "/UserPage">
+            <input form= "individual_user" type= "submit" 
+                 class= "link_button" name= "user_link" 
+                 value= "{{ blog.owner }}"/>
+        </form>
+        {{ blog.body }}
+    {% endfor %}
+{% endblock %}
+© 2017 GitHub, Inc.

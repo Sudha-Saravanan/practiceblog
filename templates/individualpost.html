@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{title}}</h1>
-    <p>{{blog.title}}</p>
-    <p>{{blog.body}}</p>
-    <p>{{blog.date}}</p>
+    <form id="individual_user" action="/UserPage">
+        <lable>Author:</lable>
+        <input type="text" name="user_link" value="{{author}}"/>
+    
+    </form>
+    <p>{{body}}</p>
+    
 {% endblock %}

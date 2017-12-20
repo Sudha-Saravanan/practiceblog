@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for blog in blogs %}
+            <form id= "individual_blog" action="/individual">
+                <input type= "text" name= "blog_title" value= "{{ blog.title }}"/>
+                {{ blog.body }}
+                
+            </form>
+    {% endfor %}
+
+{% endblock %}
