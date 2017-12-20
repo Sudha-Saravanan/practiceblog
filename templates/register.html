@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{title}}</h1>
+    <form name="register" align="center" action="/register" method='post'>
+            
+        <label for="user-name">User Name</label>
+        <input id="user-name" type="text" placeholder="Enter User Name" name="username" value="{{username}}" required/>
+        <br>
+        <br>
+        <label for="user-password">Password</label>
+        <input id="user-password" type="password" placeholder="Enter password" name="pwd1" required/>
+        <br>
+        <br>
+        <label for="verify-password">Verify-Password</label>
+        <input id="verify-password" type="password" placeholder="re-enter password" name="pwd2" required/>
+        <br>
+        <input type="submit" value="Register"/>
+    </form>
+{% endblock %}
