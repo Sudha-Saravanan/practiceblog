@@ -42,14 +42,14 @@ class User(db.Model):
     def __init__(self, username, password):
         self.username = username
         self.password = password
-
     def __repr__(self):
         return str(self.username)
+    
 
 @app.before_request
 def require_login():
     allowed_routes = ['newpost', 'login', 'blog', 'index', 'register', 'individualpost', 'allpost']
-    if request.endpoint not in allowed_routes and 'username' not in session:
+    if request.endpoint not in allowed_routes and 'user' not in session:
         return redirect('/login')
 
 
@@ -64,28 +64,32 @@ def home():
     blogs=Blog.query.all()
     welcome = "Not logged in"
 
-    if 'username' in session:
-        welcome = "Logged in as:" + session['username']
+    if 'user' in session:
+        welcome = "Logged in as:" + session['user']
         
     return render_template('home.html', title="ManiCity", blogs=blogs, welcome=welcome)
 
 @app.route("/newpost", methods=['POST', 'GET'])
 def newpost():
-    welcome = "Logged in as:" + session['username']
-    owner = User.query.filter_by(username=session['username']).first()
+    welcome = ""
+
+    if 'user' in session:
+        welcome = "Logged in as:" + session['user']
+        existing_user = User.query.filter_by(username=session['user']).first()
+    else:
+        return redirect("/")
 
     if request.method =='POST':
         newpost_title = request.form['title']
         newpost_body = request.form['body']
         
-        newpost= Blog(newpost_title, newpost_body, owner)
+        newpost= Blog(newpost_title, newpost_body, existing_user)
         
         if newpost.is_valid():
             db.session.add(newpost)
             db.session.commit()
             author = User.query.filter_by(id=newpost.owner_id).first()
-            url = "/blog?id=" + str(newpost.id)
-            return redirect(url)
+            return redirect("/individualpost?blog_title=" +newpost_title)
         elif newpost_title =='':
             flash("Title is required to post in the blog")
             return render_template('newpost.html',title="New Post")
@@ -96,17 +100,17 @@ def newpost():
         return render_template('newpost.html',title="New Post", welcome=welcome)
 
 
-@app.route("/individual")
+@app.route("/individualpost")
 def blog():
     welcome = "Not logged in"
-    if 'username' in session:
-        welcome = "Logged in as: " + session['username']
+    if 'user' in session:
+        welcome = "Logged in as: " + session['user']
 
     title = request.args.get('blog_title')
     if title:
         existing_blog = Blog.query.filter_by(title= title).first()
         author = User.query.filter_by(id= existing_blog.owner_id).first()
-    return render_template("individualpost.html", 
+        return render_template("individualpost.html", 
             title= existing_blog.title, body= existing_blog.body,
             author= author.username, welcome= welcome)
 
@@ -131,18 +135,18 @@ def blog():
 @app.route("/UserPage")
 def UserPosts():
     welcome = "Not logged in"
-    if 'username' in session:
-        welcome = "Logged in as: " + session['username']
+    if 'user' in session:
+        welcome = "Logged in as: " + session['user']
 
-    username = request.args.get('user_link')
-    if username:
-        existing_user = User.query.filter_by(username= username).first()
+    user = request.args.get('user_link')
+    if user:
+        existing_user = User.query.filter_by(username= user).first()
         user_posts = existing_user.blogs
         return render_template("UserPage.html", welcome= welcome,
-            title= username+"'s posts", blogs= user_posts)
+            title= user+"'s posts", blogs= user_posts)
 
     user_list = User.query.all()
-    return render_template("Allpost.html", title= "All Users",
+    return render_template("allpost.html", title= "All Users",
         welcome= welcome, user_list= user_list)
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -157,7 +161,7 @@ def login():
                 flash("Password is required", 'error')
                 return render_template('login.html')
             elif existing_user.password == password:
-                session['username'] = username
+                session['user'] = username
                 flash("Logged in")
                 return redirect("/blog")
             else:
@@ -184,15 +188,15 @@ def register():
             db.session.commit()
 
             #TODO - remember the user
-            session['username'] = new_user.username
+            session['user'] = new_user.username
             return redirect('/blog')
        
     return render_template('register.html', title= "Register for this BLog")
 
 @app.route('/logout')
 def logout():
-    if 'username' in session:
-        del session['username']
+    if 'user' in session:
+        del session['user']
     return redirect('/blog')
 
         
