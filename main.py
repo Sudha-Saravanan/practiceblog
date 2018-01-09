@@ -116,20 +116,7 @@ def blog():
 
     # TODO refactor to use routes with variables instead of GET parameters
     
-    #if request.args:
-     #   blogpost_id = request.args.get('id')
-      #  blog = Blog.query.get(blogpost_id)
-       # return render_template('individualpost.html', title="Blog Entry", blog=blog)
-
-    # if we're here, we need to display all the entries
-    # TODO store sort direction in session[] so we remember user's preference
-    #sort = request.args.get('sort')
-    #if (sort=="newest"):
-        #blogs = Blog.query.order_by(Blog.date.DESC()).all()
-    #else:
-        #blogs = Blog.query.all()   
-    #return render_template('allpost.html', title="All Entries", blogs=blogs)
-
+   
 
 
 @app.route("/UserPage")
@@ -183,35 +170,31 @@ def register():
         #TODO - add validation
 
         existing_user = User.query.filter_by(username=username).first()
-        # username_error = ""
-        #password_error = ""
-        #verify_error = ""
-
+      
         if username == "":
             flash("Please enter a username", 'error')
-           # username_error = "Please enter a username."
+        
         elif len(username) <= 3 or len(username) > 20:
             flash("Username must be between 3 and 20 characters long", 'error')
-            #username_error = "Username must be between 3 and 20 characters long."
+        
         elif " " in username:
             flash("Username cannot contain any spaces, 'error")
-            #username_error = "Username cannot contain any spaces."
+        
         if password == "":
             flash("Please enter a password", 'error')
-           # password_error = "Please enter a password."
+        
         elif len(password) <= 3:
             flash("Password must be greater than 3 characters long", 'error')
-           # password_error = "Password must be greater than 3 characters long."
+        
         elif " " in password:
             flash("Password cannot contain any spaces", 'error')
-            #password_error = "Password cannot contain any spaces."
+        
         if password != verify or verify == "":
             flash("Passwords do not match", 'error')
-            #verify_error = "Passwords do not match."
+        
         if existing_user:
             flash("Username already taken", 'error')
-            #username_error = "Username already taken."
-        # If fields are good, continue to creating session with new username and password.
+        
         if len(username) > 3 and len(password) > 3 and password == verify and not existing_user:
             new_user = User(username, password)
             db.session.add(new_user)
@@ -219,18 +202,6 @@ def register():
             session['user'] = new_user.username
             return redirect('/blog')
 
-        #existing_user = User.query.filter_by(username=username).first()
-        #if existing_user:
-            #flash("User exist", 'error')
-#
-        #if not existing_user:
-            #new_user = User(username, password)
-            #db.session.add(new_user)
-            #db.session.commit()
-#
-            ##TODO - remember the user
-            #session['user'] = new_user.username
-            #return redirect('/blog')
        
     return render_template('register.html', title= "Register for this BLog")
 
