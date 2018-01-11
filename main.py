@@ -61,13 +61,32 @@ def index():
    
 @app.route("/blog")
 def home():
-    blogs=Blog.query.all()
     welcome = "Not logged in"
 
     if 'user' in session:
         welcome = "Logged in as:" + session['user']
-        
-    return render_template('home.html', title="ManiCity", blogs=blogs, welcome=welcome)
+    
+    users=User.query.all()
+    blogs=Blog.query.all()
+         
+    return render_template('home.html', title="ManiCity", users=users, welcome=welcome)
+
+@app.route("/allpost")
+def allpost():
+    
+    welcome = "Not logged in"
+    
+    if 'user' in session:
+        welcome = "Logged in as: " + session['user']
+
+    users = User.query.all()
+    blogs = Blog.query.all()
+    
+    if not users:
+        flash('User list empty, please register!')
+        return('/register') 
+    else:
+        return render_template('allpost.html', users=users, blogs=blogs, welcome = welcome)
 
 @app.route("/newpost", methods=['POST', 'GET'])
 def newpost():
@@ -115,10 +134,6 @@ def blog():
             author= author.username, welcome= welcome)
 
     # TODO refactor to use routes with variables instead of GET parameters
-    
-   
-
-
 @app.route("/UserPage")
 def UserPosts():
     welcome = "Not logged in"
@@ -132,9 +147,7 @@ def UserPosts():
         return render_template("UserPage.html", welcome= welcome,
             title= user+"'s posts", blogs= user_posts)
 
-    user_list = User.query.all()
-    return render_template("allpost.html", title= "All Users",
-        welcome= welcome, user_list= user_list)
+    
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -158,7 +171,7 @@ def login():
             flash("Invalid Username", 'error')
             return render_template('login.html')   
             
-    return render_template('login.html', title ="Login")#, username=username)
+    return render_template('login.html', title ="Login")
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():

@@ -1,10 +1,18 @@
 {% extends "base.html" %}
-
 {% block content %}
-    {% for user in user_list %}
-        <lable><b> User Id: </b></lable>
-        {{ user.id }}
-        <lable>Username:</lable>
-        <input type="text" name= "user_link" value= "{{ user.username }}"/>
+    <h1>Blog List</h1>
+    {% for blog in blogs %}
+    
+        <form id= "individual_blog" action="/individualpost">
+            <h3><a href="/individualpost?blog_title={{blog.title}}">{{blog.title}}</a></h3>
+            {{ blog.body }}
+            <p>Written by <a href="/UserPage?user_link={{blog.owner.username}}">{{blog.owner.username}}</a></p>
+        </form>
+        
+        
     {% endfor %}
+    
 {% endblock %}
+
+
+    

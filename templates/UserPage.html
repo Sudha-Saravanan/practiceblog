@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+    <h2>{{title}}</h2>
     {% for blog in blogs %}
-         
-        <form id= "individual_blog" action="/individualpost">
-            <input type= "submit" name= "blog_title" value= "{{ blog.title }}"/>
-            <br>
-            {{ blog.body }}
-                
-        </form>
+        <li><h3 style="display:inline-block"><a href="/individualpost?blog_title={{blog.title}}" >{{blog.title}}</a></h3></li>
+        {{ blog.body }}
+        <p>Written by <a href="/UserPage?user_link={{blog.owner.username}}">{{blog.owner.username}}</a></p>
     {% endfor %}
 
 {% endblock %}

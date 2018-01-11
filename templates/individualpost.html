@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+    
+    <p><b>{{title}}</b></p>
+    <p>{{body}}</p>
     <form id="individual_user" action="/UserPage">
-        <lable>Author:</lable>
+        <lable>Written by:</lable>
         <input type="submit" name="user_link" value="{{author}}"/>
     
     </form>
-    <p>{{body}}</p>
     
 {% endblock %}

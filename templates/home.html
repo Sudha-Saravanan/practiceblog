@@ -1,17 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-
-    {% for blog in blogs %}
-    
-    <ul>
-        <form id= "individual_user" action= "/UserPage">
-            <input form= "individual_user" type= "submit" 
-                 class= "link_button" name= "user_link" 
-                 value= "{{ blog.owner }}"/>
-        </form>
-    </ul>
-        
-        
+    <h2>Choose your favorite blogger</h2>
+    {% for user in users %}
+       <li><h3 style="display:inline-block"><a href="/UserPage?user_link={{user.username}}" >{{user.username}}</a></h3></li>
     {% endfor %}
 
 {% endblock %}
